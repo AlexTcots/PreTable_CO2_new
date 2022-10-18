@@ -93,12 +93,12 @@ double FHO::Q_func(double theta_prime, double theta1, double phi1, double theta,
 }
 
 double
-FHO::Compute_pro_if_deex(int n, int i, int f, const std::vector<double> &Ebins,  const double THETA_mole) {
-    double E_t_r = Ebins.at(n);
+FHO::Compute_pro_if_deex(int n, int i, int f) {
+    double E_t_r = Ebins_.at(n);
     double p;
     double u1, y1, s1, ns1, w1, gamma1, theta_prime1, theta, q1, p1;
     p = 0;
-    theta = THETA_mole;
+    theta = gas_.GetTHETA();
     u1 = y1 = s1 = ns1 = w1 = gamma1 = theta_prime1 = q1 = p1 = 0;
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
     omp_set_num_threads(4); // Use 4 threads for all consecutive parallel regions
@@ -142,14 +142,14 @@ FHO::Compute_pro_if_deex(int n, int i, int f, const std::vector<double> &Ebins, 
 }
 
 double
-FHO::Compute_pro_if_exci(int n, int i, int f, const std::vector<double> &Ebins, const double THETA_mole) {
-    double E_t_r = Ebins.at(n);
+FHO::Compute_pro_if_exci(int n, int i, int f) {
+    double E_t_r = Ebins_.at(n);
     double p;
     double u1, y1, s1, ns1, w1, gamma1, theta_prime1, theta, q1, p1, E_t_f, E_prime, g_i, g_f, em1, em2, factor;
     std::pair<double, double> new_e12;
     int count = 0;
     p = 0;
-    theta = THETA_mole;
+    theta = gas_.GetTHETA();
     u1 = y1 = s1 = ns1 = w1 = gamma1 = theta_prime1 = q1 = p1 = E_t_f = E_prime = g_i = g_f = em1 = em2 = factor = 0;
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
     omp_set_num_threads(4); // Use 4 threads for all consecutive parallel regions
@@ -267,7 +267,7 @@ void FHO::ApplyComputing() {
                 if (s <= 10 && s != 0) {
                     //chose excitation or deexcitation
                     if (i > f) { //deexcitation
-                        double p = Compute_pro_if_deex(n, i, f, Ebins_,   gas_.GetTHETA());
+                        double p = Compute_pro_if_deex(n, i, f);
                         psum += p;
                         Table_output << n << ' ' << i << ' ' << f << ' '
                                  << std::setprecision(10)
@@ -279,7 +279,7 @@ void FHO::ApplyComputing() {
                         double e_t_r = Ebins_.at(n);
                         // Trans+rot should greater than evib1 -evib2;
                         if (e_t_r > std::fabs(e1 - e2)) {
-                            double p = Compute_pro_if_exci(n, i, f, Ebins_, gas_.GetTHETA());
+                            double p = Compute_pro_if_exci(n, i, f);
                             psum += p;
                             Table_output << n << ' ' << i << ' ' << f << ' '
                                      << std::setprecision(10)
