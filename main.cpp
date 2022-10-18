@@ -5,7 +5,7 @@
 int main() {
     const double omega_CO2_symtric = 148000;
     const double omega_CO2_bending = 52600;
-    const double omega_co2_asymtric = 256500;
+    const double omega_CO2_asymtric = 256500;
     const double Morse_CO2 = 4.3e10;
     const double m_r_CO2 = 3.655e-26;
     const double m_r_o_CO2 =0.725e-26;
@@ -24,7 +24,9 @@ int main() {
     double seed = 1991.1112;
     int MS = 1000'000;
 
-  species CO2(THETA_CO2_symetric,m_r_CO2,Morse_CO2,Xi_CO2,omega_CO2_symtric,0.0);
-  FHO Table_co2(CO2,E_min,E_max, Nbins,seed,MS);
-  Table_co2.ApplyComputing();
+  species CO2_symeric(THETA_CO2_symetric,m_r_CO2,Morse_CO2,Xi_CO2,omega_CO2_symtric,0.0);
+  species CO2_bending(THETA_CO2_bending,m_r_CO2,Morse_CO2,Xi_CO2,omega_CO2_bending,0.0);
+  species CO2_asymtric(THETA_CO2_asymtric,m_r_CO2,Morse_CO2,Xi_CO2,omega_CO2_asymtric,0.0);
+  FHO Table_co2(CO2_symeric,E_min,E_max, Nbins,seed,MS);
+  Table_co2.ApplyComputing("co2_symmetric");
 }

@@ -220,7 +220,7 @@ FHO::Compute_pro_if_exci(int n, int i, int f) {
     return p;
 }
 
-void FHO::ApplyComputing() {
+void FHO::ApplyComputing(const std::string& name) {
     for (int i = 0; i < Nbins_; ++i) {
         double e = Enb(E_min_, E_max_, Nbins_, i);
         double w = 0.01 * e / (1.5 * gas_.GetH() * gas_.GetC());// in 1\cm
@@ -228,16 +228,16 @@ void FHO::ApplyComputing() {
         E_w_.push_back(std::move(w));
 
     }
-    Ebins_output.open("Ebins.txt", std::fstream::out | std::fstream::trunc);
+    Ebins_output.open("Ebins_"+name+".txt", std::fstream::out | std::fstream::trunc);
     //outfile2<<500<<'\n';
 
 
-    E_w_output.open("Ebins_omega.txt", std::fstream::out | std::fstream::trunc);
+    E_w_output.open("Ebins_omega_"+name+".txt", std::fstream::out | std::fstream::trunc);
 
     //std::fstream outfile4;
     //outfile4.open("table_test.txt", std::fstream::out | std::fstream::trunc);
 
-    Table_output.open("table_dsmc_co2_sym.txt", std::fstream::out | std::fstream::trunc);
+    Table_output.open("table_dsmc_"+name+".txt", std::fstream::out | std::fstream::trunc);
 
 
     //Energy bins done;

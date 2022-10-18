@@ -65,7 +65,7 @@ public:
 
     FHO(const species &gas, double E_min, double E_max, int Nbins, double seed, int MS);
 
-    void ApplyComputing();
+    void ApplyComputing(const std::string& name);
 
 
 };
