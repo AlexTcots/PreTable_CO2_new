@@ -23,7 +23,7 @@ int main() {
     double E_max = 1.5 * h * c * 1e8;
     int Nbins = 500;
     double seed = 1991.1112;
-    int MS = 1000'000;
+    int MS = 10000;
 
     species CO2_symeric(THETA_CO2_symetric, m_r_CO2, Morse_CO2, Xi_CO2, omega_CO2_symtric, 0.0);
     species CO2_bending(THETA_CO2_bending, m_r_CO2, Morse_CO2, Xi_CO2, omega_CO2_bending, 0.0);
