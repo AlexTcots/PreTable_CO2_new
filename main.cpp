@@ -30,7 +30,7 @@ int main() {
     double seed = 1991.1112;
     int MS = 1000'000;
 
-    const int Num_core = 16; // Use Num_core theads for OpenMP
+    const int Num_core = 8; // Use Num_core theads for OpenMP
     std::cout << "XI symmetric = " << Xi_CO2_symmetric << '\n';
     std::cout << "XI bending = " << Xi_CO2_bending << '\n';
     std::cout << "XI asymmetric = " << Xi_CO2_asymmetric << '\n';
