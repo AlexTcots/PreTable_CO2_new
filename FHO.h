@@ -29,6 +29,7 @@ class FHO {
     const double rd_seed_;
     RanPark rd;
     const int MS_;
+    const int Num_core_;
 
     //private methods;
     double Enb(double e_min, double e_max, int Nbins, int nbin);
@@ -63,7 +64,7 @@ class FHO {
 public:
     FHO();
 
-    FHO(const species &gas, double E_min, double E_max, int Nbins, double seed, int MS);
+    FHO(const species &gas, double E_min, double E_max, int Nbins, double seed, int MS,int Num_core);
 
     void ApplyComputing(const std::string& name);
 

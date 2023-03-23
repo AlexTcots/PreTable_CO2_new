@@ -5,14 +5,14 @@
 #include "FHO.h"
 
 FHO::FHO() : gas_(), E_min_(), E_max_(), Nbins_(), Ebins_(), E_w_(), rd_seed_(),
-             rd(rd_seed_),MS_() {
+             rd(rd_seed_),MS_(),Num_core_() {
     std::cout << "FHO has been created with zero values!" << std::endl;
 
 }
 
-FHO::FHO(const species &gas, double E_min, double E_max, int Nbins, double seed,int MS) :
+FHO::FHO(const species &gas, double E_min, double E_max, int Nbins, double seed,int MS,int Num_core) :
         gas_(gas), E_min_(E_min), E_max_(E_max), Nbins_(Nbins),
-        rd_seed_(seed), rd(rd_seed_),MS_(MS) {
+        rd_seed_(seed), rd(rd_seed_),MS_(MS),Num_core_(Num_core) {
     Ebins_.reserve(Nbins_);
     E_w_.reserve(Nbins_);
     std::cout << "FHO has been created!" << std::endl;
@@ -101,7 +101,7 @@ FHO::Compute_pro_if_deex(int n, int i, int f) {
     theta = gas_.GetTHETA();
     u1 = y1 = s1 = ns1 = w1 = gamma1 = theta_prime1 = q1 = p1 = 0;
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
-    omp_set_num_threads(4); // Use 4 threads for all consecutive parallel regions
+    omp_set_num_threads(Num_core_); // Use Num_core_ threads for all consecutive parallel regions
 #pragma omp parallel default(none) private (u1, y1, s1, ns1, w1, gamma1, theta_prime1, q1, p1) shared(E_t_r, p, rd, MS_, i, f, theta)
 #pragma omp  for reduction (+:p)
     for (int j = 0; j < MS_; ++j) {
@@ -152,7 +152,7 @@ FHO::Compute_pro_if_exci(int n, int i, int f) {
     theta = gas_.GetTHETA();
     u1 = y1 = s1 = ns1 = w1 = gamma1 = theta_prime1 = q1 = p1 = E_t_f = E_prime = g_i = g_f = em1 = em2 = factor = 0;
     omp_set_dynamic(0);     // Explicitly disable dynamic teams
-    omp_set_num_threads(4); // Use 4 threads for all consecutive parallel regions
+    omp_set_num_threads(Num_core_); // Use Num_core_ threads for all consecutive parallel regions
 #pragma omp parallel default(none) private (u1, y1, s1, ns1, w1, gamma1, theta_prime1, q1, p1, E_t_f, E_prime, g_i, g_f, em1, em2, factor, new_e12) shared(E_t_r, p, rd, MS_, i, f, theta, count)
 #pragma omp  for reduction (+:p, count)
 
@@ -270,9 +270,9 @@ void FHO::ApplyComputing(const std::string& name) {
                         double p = Compute_pro_if_deex(n, i, f);
                         psum += p;
                         Table_output << n << ' ' << i << ' ' << f << ' '
-                                 << std::setprecision(10)
-                                 << p << ' '
-                                 << std::endl;
+                                     << std::setprecision(10)
+                                     << p << ' '
+                                     << std::endl;
                     } else if (i < f) {// excitation
                         double e1 = Vibr_eng(i);
                         double e2 = Vibr_eng(f);
@@ -282,24 +282,24 @@ void FHO::ApplyComputing(const std::string& name) {
                             double p = Compute_pro_if_exci(n, i, f);
                             psum += p;
                             Table_output << n << ' ' << i << ' ' << f << ' '
-                                     << std::setprecision(10)
-                                     << p << ' '
-                                     << std::endl;
+                                         << std::setprecision(10)
+                                         << p << ' '
+                                         << std::endl;
                         } else {
                             double p = 0;
                             Table_output << n << ' ' << i << ' ' << f << ' '
-                                     << std::setprecision(10)
-                                     << p << ' '
-                                     << std::endl;
+                                         << std::setprecision(10)
+                                         << p << ' '
+                                         << std::endl;
                         }
                     }
 
 
                 } else {
                     Table_output << n << ' ' << i << ' ' << f << ' '
-                             << std::setprecision(10)
-                             << 0.0 << ' '
-                             << std::endl;
+                                 << std::setprecision(10)
+                                 << 0.0 << ' '
+                                 << std::endl;
                 }
 
                 std::cout << n << ' ' << i << ' ' << f << ' ' << "complete" << ' ' << count << std::endl;
